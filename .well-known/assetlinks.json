@@ -1,0 +1,14 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dianaconforti.app",
+      "sha256_cert_fingerprints": [
+        "995A56619F6DA709774D16466DCA133DDF63F8DE37A91DBFD453CE6247BDA77C",
+        "F0B4052CCF3F0E4D1A0C5ADEFFA8CA178CC188EA1BEF660DD5B0F097E2431987"
+      ]
+    }
+  }
+]
+

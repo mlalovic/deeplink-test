@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "HBGC68FY4F.com.dianaconforti.app",
+        "paths": ["/app/*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["HBGC68FY4F.com.dianaconforti.app"]
+  }
+}
+
