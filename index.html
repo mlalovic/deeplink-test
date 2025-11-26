@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Link Test - Diana Conforti</title>
+    <title>Deep Link Test</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -12,7 +12,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
         }
         .container {
             background: white;
@@ -20,73 +20,187 @@
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             max-width: 500px;
+            width: 90%;
+        }
+        h1 { 
+            color: #1e3a8a; 
+            margin-bottom: 10px;
             text-align: center;
         }
-        h1 { color: #333; margin-bottom: 20px; }
-        p { color: #666; line-height: 1.6; margin-bottom: 30px; }
+        p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .email-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            border: 2px solid #3b82f6;
+        }
+        .email-section label {
+            display: block;
+            color: #1e3a8a;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .email-section input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #93c5fd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .email-section input:focus {
+            border-color: #3b82f6;
+        }
         .button {
             display: block;
             padding: 18px 40px;
             margin: 15px 0;
-            background: #667eea;
+            background: #3b82f6;
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
             font-size: 16px;
             transition: all 0.3s;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            text-align: center;
         }
-        .button:hover { background: #5568d3; transform: translateY(-2px); }
+        .button:hover { 
+            background: #2563eb; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
         .button:active { transform: translateY(0); }
+        .button.secondary {
+            background: #1e3a8a;
+        }
+        .button.secondary:hover {
+            background: #1e40af;
+        }
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            color: #9ca3af;
+            font-size: 14px;
+            position: relative;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
         .info { 
             margin-top: 30px; 
-            padding: 20px; 
-            background: #f5f5f5; 
+            padding: 15px; 
+            background: #f9fafb; 
             border-radius: 8px;
-            font-size: 14px;
-            color: #666;
+            font-size: 13px;
+            color: #6b7280;
+            border-left: 4px solid #3b82f6;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🧪 Deep Link Test</h1>
-        <p><strong>Diana Conforti App</strong></p>
-        <p>Tap the button below to test deep linking to the mobile app!</p>
+        <h1>🔗 Deep Link Tester</h1>
+        <p>Test deep linking to your mobile app</p>
         
-        <a href="dianaconforti://subscription-success?email=test@example.com" class="button">
-            🚀 Open App with Email
+        <div class="email-section">
+            <label for="emailInput">📧 Enter Email Address:</label>
+            <input 
+                type="email" 
+                id="emailInput" 
+                placeholder="user@example.com"
+                value="test@example.com"
+            >
+        </div>
+
+        <button onclick="openAppWithCustomEmail()" class="button">
+            🚀 Open App with Custom Email
+        </button>
+
+        <div class="divider">or use quick test</div>
+
+        <a href="dianaconforti://subscription-success?email=john@doe.com" class="button secondary">
+            📧 Quick Test: john@doe.com
         </a>
         
-        <a href="dianaconforti://subscription-success?email=john@doe.com" class="button">
-            📧 Test with John Doe
-        </a>
-        
-        <a href="dianaconforti://subscription-success" class="button">
+        <a href="dianaconforti://subscription-success" class="button secondary">
             🔓 Open Without Email
         </a>
 
         <div class="info">
-            <strong>Note:</strong> App must be installed on your device for this to work.
+            <strong>💡 Note:</strong> App must be installed on your device.
             <br><br>
-            <strong>iOS:</strong> Will show "Open in [App]" option<br>
-            <strong>Android:</strong> Will prompt to open with app
+            <strong>iOS:</strong> Will show "Open in App" prompt<br>
+            <strong>Android:</strong> Will ask to open with app
         </div>
     </div>
 
     <script>
-        // Fallback for devices without app installed
-        setTimeout(() => {
-            document.querySelectorAll('.button').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    setTimeout(() => {
-                        if (!document.hidden) {
-                            alert('App not installed? Install from App Store or Google Play!');
-                        }
-                    }, 2000);
-                });
+        function openAppWithCustomEmail() {
+            const email = document.getElementById('emailInput').value.trim();
+            
+            if (!email) {
+                alert('Please enter an email address!');
+                return;
+            }
+            
+            // Validate basic email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address!');
+                return;
+            }
+            
+            // Build deep link with email
+            const deepLink = `dianaconforti://subscription-success?email=${encodeURIComponent(email)}`;
+            
+            // Try to open app
+            window.location.href = deepLink;
+            
+            // Fallback message if app not installed
+            setTimeout(() => {
+                if (!document.hidden) {
+                    alert('App not installed? Install from App Store or Google Play!');
+                }
+            }, 2000);
+        }
+
+        // Handle enter key in email input
+        document.getElementById('emailInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                openAppWithCustomEmail();
+            }
+        });
+
+        // Fallback for quick test buttons
+        document.querySelectorAll('a.button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                setTimeout(() => {
+                    if (!document.hidden) {
+                        alert('App not installed? Install from App Store or Google Play!');
+                    }
+                }, 2000);
             });
-        }, 100);
+        });
     </script>
 </body>
 </html>
