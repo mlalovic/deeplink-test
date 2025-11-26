@@ -155,6 +155,56 @@
     </div>
 
     <script>
+        // Store URLs
+        const APP_STORE_URL = 'https://apps.apple.com/us/app/plan-over-mood/id6740525525';
+        const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.dianaconforti.app';
+
+        // Detect platform
+        function detectPlatform() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return 'ios';
+            }
+            
+            if (/android/i.test(userAgent)) {
+                return 'android';
+            }
+            
+            return 'unknown';
+        }
+
+        // Get appropriate store URL
+        function getStoreUrl() {
+            const platform = detectPlatform();
+            return platform === 'ios' ? APP_STORE_URL : PLAY_STORE_URL;
+        }
+
+        // Try to open app, fallback to store
+        function tryOpenApp(deepLink) {
+            let appOpened = false;
+            
+            // Detect if page becomes hidden (app opened)
+            const visibilityHandler = () => {
+                if (document.hidden) {
+                    appOpened = true;
+                }
+            };
+            document.addEventListener('visibilitychange', visibilityHandler);
+            
+            // Try to open app
+            window.location.href = deepLink;
+            
+            // If app didn't open after 2 seconds, redirect to store
+            setTimeout(() => {
+                document.removeEventListener('visibilitychange', visibilityHandler);
+                
+                if (!appOpened) {
+                    window.location.href = getStoreUrl();
+                }
+            }, 2000);
+        }
+
         function openAppWithCustomEmail() {
             const email = document.getElementById('emailInput').value.trim();
             
@@ -173,15 +223,7 @@
             // Build deep link with email
             const deepLink = `dianaconforti://subscription-success?email=${encodeURIComponent(email)}`;
             
-            // Try to open app
-            window.location.href = deepLink;
-            
-            // Fallback message if app not installed
-            setTimeout(() => {
-                if (!document.hidden) {
-                    alert('App not installed? Install from App Store or Google Play!');
-                }
-            }, 2000);
+            tryOpenApp(deepLink);
         }
 
         // Handle enter key in email input
@@ -194,11 +236,9 @@
         // Fallback for quick test buttons
         document.querySelectorAll('a.button').forEach(btn => {
             btn.addEventListener('click', function(e) {
-                setTimeout(() => {
-                    if (!document.hidden) {
-                        alert('App not installed? Install from App Store or Google Play!');
-                    }
-                }, 2000);
+                e.preventDefault();
+                const deepLink = this.getAttribute('href');
+                tryOpenApp(deepLink);
             });
         });
     </script>
