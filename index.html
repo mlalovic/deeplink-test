@@ -180,9 +180,34 @@
             return platform === 'ios' ? APP_STORE_URL : PLAY_STORE_URL;
         }
 
+        // Copy email to clipboard for deferred deep linking
+        async function copyEmailToClipboard(email) {
+            if (email && navigator.clipboard) {
+                try {
+                    // Add a special prefix so app knows it's from us
+                    await navigator.clipboard.writeText(`pom_email:${email}`);
+                    console.log('Email copied to clipboard for deferred deep link');
+                } catch (err) {
+                    console.log('Clipboard write failed:', err);
+                }
+            }
+        }
+
+        // Extract email from deep link URL
+        function extractEmailFromDeepLink(deepLink) {
+            try {
+                const url = new URL(deepLink);
+                return url.searchParams.get('email') || '';
+            } catch {
+                const match = deepLink.match(/email=([^&]+)/);
+                return match ? decodeURIComponent(match[1]) : '';
+            }
+        }
+
         // Try to open app, fallback to store
         function tryOpenApp(deepLink) {
             let appOpened = false;
+            const email = extractEmailFromDeepLink(deepLink);
             
             // Detect if page becomes hidden (app opened)
             const visibilityHandler = () => {
@@ -195,11 +220,13 @@
             // Try to open app
             window.location.href = deepLink;
             
-            // If app didn't open after 2 seconds, redirect to store
-            setTimeout(() => {
+            // If app didn't open after 2 seconds, copy email & redirect to store
+            setTimeout(async () => {
                 document.removeEventListener('visibilitychange', visibilityHandler);
                 
                 if (!appOpened) {
+                    // Copy email to clipboard before going to store
+                    await copyEmailToClipboard(email);
                     window.location.href = getStoreUrl();
                 }
             }, 2000);
